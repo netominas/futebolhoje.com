@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://futebolhoje.com/sitemap.xml
