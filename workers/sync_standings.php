@@ -12,34 +12,38 @@ require __DIR__ . '/bootstrap.php';
 $inicio = microtime(true);
 $pdo = Database::getConnection();
 
-try {
-    $stmt = $pdo->query(
-        "SELECT DISTINCT liga_id, temporada FROM jogos
-         WHERE status_curto IN ('FT', 'AET', 'PEN')
-           AND updated_at >= (NOW() - INTERVAL 4 HOUR)"
-    );
-    $combinacoes = $stmt->fetchAll();
+$stmt = $pdo->query(
+    "SELECT DISTINCT liga_id, temporada FROM jogos
+     WHERE status_curto IN ('FT', 'AET', 'PEN')
+       AND updated_at >= (NOW() - INTERVAL 4 HOUR)"
+);
+$combinacoes = $stmt->fetchAll();
 
-    $stmtUpsert = $pdo->prepare(
-        'INSERT INTO classificacao (
-            liga_id, temporada, grupo, time_id, posicao, pontos, jogos, vitorias, empates, derrotas,
-            gols_pro, gols_contra, saldo_gols, forma
-        ) VALUES (
-            :liga_id, :temporada, :grupo, :time_id, :posicao, :pontos, :jogos, :vitorias, :empates, :derrotas,
-            :gols_pro, :gols_contra, :saldo, :forma
-        )
-        ON DUPLICATE KEY UPDATE
-            posicao = VALUES(posicao), pontos = VALUES(pontos), jogos = VALUES(jogos),
-            vitorias = VALUES(vitorias), empates = VALUES(empates), derrotas = VALUES(derrotas),
-            gols_pro = VALUES(gols_pro), gols_contra = VALUES(gols_contra), saldo_gols = VALUES(saldo_gols),
-            forma = VALUES(forma)'
-    );
+$stmtUpsert = $pdo->prepare(
+    'INSERT INTO classificacao (
+        liga_id, temporada, grupo, time_id, posicao, pontos, jogos, vitorias, empates, derrotas,
+        gols_pro, gols_contra, saldo_gols, forma
+    ) VALUES (
+        :liga_id, :temporada, :grupo, :time_id, :posicao, :pontos, :jogos, :vitorias, :empates, :derrotas,
+        :gols_pro, :gols_contra, :saldo, :forma
+    )
+    ON DUPLICATE KEY UPDATE
+        posicao = VALUES(posicao), pontos = VALUES(pontos), jogos = VALUES(jogos),
+        vitorias = VALUES(vitorias), empates = VALUES(empates), derrotas = VALUES(derrotas),
+        gols_pro = VALUES(gols_pro), gols_contra = VALUES(gols_contra), saldo_gols = VALUES(saldo_gols),
+        forma = VALUES(forma)'
+);
 
-    $totalLigas = 0;
-    foreach ($combinacoes as $combo) {
-        $ligaId = (int) $combo['liga_id'];
-        $temporada = (int) $combo['temporada'];
+$totalLigas = 0;
+$totalErros = 0;
 
+foreach ($combinacoes as $combo) {
+    $ligaId = (int) $combo['liga_id'];
+    $temporada = (int) $combo['temporada'];
+
+    // Uma liga com formato inesperado (ex: chave eliminatória sem tabela de pontos) não pode
+    // derrubar a sincronização das outras 261 ligas da leva.
+    try {
         $grupos = ApiFootball::standings($ligaId, $temporada);
         if ($grupos === []) {
             continue;
@@ -51,6 +55,10 @@ try {
 
         foreach ($tabelasPorGrupo as $indiceGrupo => $tabela) {
             foreach ($tabela as $linha) {
+                if (empty($linha['team']['id'])) {
+                    continue;
+                }
+
                 SyncHelpers::upsertTime($pdo, $linha['team']);
 
                 $stmtUpsert->execute([
@@ -73,12 +81,11 @@ try {
         }
 
         $totalLigas++;
+    } catch (Throwable $e) {
+        $totalErros++;
+        syncLog($pdo, 'sync_standings', 'erro', "liga {$ligaId}/{$temporada}: " . $e->getMessage());
     }
-
-    syncLog($pdo, 'sync_standings', 'ok', "{$totalLigas} ligas atualizadas", (int) ((microtime(true) - $inicio) * 1000));
-    echo "OK: {$totalLigas} ligas atualizadas\n";
-} catch (Throwable $e) {
-    syncLog($pdo, 'sync_standings', 'erro', $e->getMessage(), (int) ((microtime(true) - $inicio) * 1000));
-    fwrite(STDERR, 'Erro: ' . $e->getMessage() . "\n");
-    exit(1);
 }
+
+syncLog($pdo, 'sync_standings', 'ok', "{$totalLigas} ligas atualizadas, {$totalErros} erros", (int) ((microtime(true) - $inicio) * 1000));
+echo "OK: {$totalLigas} ligas atualizadas, {$totalErros} erros\n";

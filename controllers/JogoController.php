@@ -15,6 +15,10 @@ final class JogoController
             return;
         }
 
+        if (jogoEstaAoVivo($jogo['status_curto']) && $this->eventosDesatualizados($jogo['eventos_atualizados_em'])) {
+            $this->atualizarEventosEEstatisticas($id);
+        }
+
         $eventos = Jogo::eventos($id);
         $estatisticas = Jogo::estatisticas($id, (int) $jogo['mandante_id'], (int) $jogo['visitante_id']);
 
@@ -50,5 +54,28 @@ final class JogoController
             'eventos' => $eventos,
             'estatisticas' => $estatisticas,
         ]);
+    }
+
+    private function eventosDesatualizados(?string $atualizadoEm): bool
+    {
+        if ($atualizadoEm === null) {
+            return true;
+        }
+
+        return strtotime($atualizadoEm) < time() - 20;
+    }
+
+    // Busca eventos/estatísticas na hora, só para quem realmente abre a página do jogo — evita
+    // ter que sincronizar isso pra todos os jogos ao vivo do mundo em segundo plano (ver sync_live.php).
+    private function atualizarEventosEEstatisticas(int $jogoId): void
+    {
+        try {
+            $pdo = Database::getConnection();
+            SyncHelpers::sincronizarEventos($pdo, $jogoId, ApiFootball::fixtureEvents($jogoId));
+            SyncHelpers::sincronizarEstatisticas($pdo, $jogoId, ApiFootball::fixtureStatistics($jogoId));
+            SyncHelpers::marcarEventosAtualizados($pdo, $jogoId);
+        } catch (Throwable $e) {
+            // Se a API falhar aqui, a página ainda renderiza com os últimos dados salvos no banco.
+        }
     }
 }

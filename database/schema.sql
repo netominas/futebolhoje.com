@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS ligas (
     nome VARCHAR(160) NOT NULL,
     tipo ENUM('League', 'Cup') NOT NULL DEFAULT 'League',
     pais VARCHAR(100) NOT NULL,
-    pais_codigo CHAR(2) DEFAULT NULL,
+    pais_codigo VARCHAR(10) DEFAULT NULL,
     logo VARCHAR(255) DEFAULT NULL,
     bandeira_pais VARCHAR(255) DEFAULT NULL,
     slug VARCHAR(200) NOT NULL,
@@ -68,6 +68,8 @@ CREATE TABLE IF NOT EXISTS jogos (
     gols_visitante_intervalo TINYINT UNSIGNED DEFAULT NULL,
     estadio_id INT UNSIGNED DEFAULT NULL,
     arbitro VARCHAR(120) DEFAULT NULL,
+    -- Quando eventos/estatisticas detalhados foram buscados pela ultima vez (sob demanda, ver JogoController)
+    eventos_atualizados_em DATETIME DEFAULT NULL,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     KEY idx_jogos_data (data_utc),

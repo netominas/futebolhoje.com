@@ -6,7 +6,10 @@ declare(strict_types=1);
 // Solução: o script fica rodando ~55s, atualizando a cada 15s (4 ciclos), e o cron dispara ele
 // de novo no minuto seguinte. Ex. crontab: * * * * * php /caminho/futebolhoje/workers/sync_live.php
 //
-// Busca eventos/estatísticas só dos jogos ao vivo (poucos por vez), não de todos os jogos do dia.
+// Só atualiza placar/status/minuto (1 request cobre TODOS os jogos ao vivo do mundo). Eventos e
+// estatísticas detalhados de cada partida são buscados sob demanda pelo JogoController quando
+// alguém abre aquela página — com todas as ligas cobertas, pode haver ~100 jogos ao vivo ao mesmo
+// tempo, e buscar o detalhe de cada um aqui estouraria tempo de execução e cota da API.
 
 require __DIR__ . '/bootstrap.php';
 
@@ -22,13 +25,7 @@ do {
         $jogosAoVivo = ApiFootball::fixturesLive();
 
         foreach ($jogosAoVivo as $item) {
-            $jogoId = SyncHelpers::upsertJogo($pdo, $item);
-
-            $eventos = ApiFootball::fixtureEvents($jogoId);
-            SyncHelpers::sincronizarEventos($pdo, $jogoId, $eventos);
-
-            $estatisticas = ApiFootball::fixtureStatistics($jogoId);
-            SyncHelpers::sincronizarEstatisticas($pdo, $jogoId, $estatisticas);
+            SyncHelpers::upsertJogo($pdo, $item);
         }
 
         syncLog($pdo, 'sync_live', 'ok', count($jogosAoVivo) . ' jogos ao vivo', (int) ((microtime(true) - $inicioCiclo) * 1000));

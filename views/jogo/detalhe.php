@@ -5,12 +5,19 @@
 $aoVivo = jogoEstaAoVivo($jogo['status_curto']);
 $encerrado = in_array($jogo['status_curto'], ['FT', 'AET', 'PEN'], true);
 
-$iconesEvento = [
-    'Goal' => '⚽',
-    'Card' => '🟨',
-    'subst' => '🔁',
-    'Var' => '📺',
-];
+function iconeEvento(string $tipo, ?string $detalhe): string
+{
+    if ($tipo === 'Card') {
+        return $detalhe !== null && str_contains($detalhe, 'Red') ? '🟥' : '🟨';
+    }
+
+    return match ($tipo) {
+        'Goal' => '⚽',
+        'subst' => '🔁',
+        'Var' => '📺',
+        default => '•',
+    };
+}
 ?>
 <div class="container">
 
@@ -50,7 +57,7 @@ $iconesEvento = [
             <?php foreach ($eventos as $evento): ?>
                 <div class="timeline-evento">
                     <div class="timeline-evento__minuto"><?= (int) $evento['minuto'] ?>'<?= $evento['minuto_extra'] ? '+' . (int) $evento['minuto_extra'] : '' ?></div>
-                    <div class="timeline-evento__icone"><?= $iconesEvento[$evento['tipo']] ?? '•' ?></div>
+                    <div class="timeline-evento__icone"><?= iconeEvento($evento['tipo'], $evento['detalhe']) ?></div>
                     <div>
                         <strong><?= e($evento['jogador'] ?? '') ?></strong>
                         <?php if ($evento['jogador_assistencia']): ?> (assist. <?= e($evento['jogador_assistencia']) ?>)<?php endif; ?>

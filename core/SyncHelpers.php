@@ -117,6 +117,12 @@ final class SyncHelpers
         return (int) $fixture['id'];
     }
 
+    public static function marcarEventosAtualizados(PDO $pdo, int $jogoId): void
+    {
+        $stmt = $pdo->prepare('UPDATE jogos SET eventos_atualizados_em = NOW() WHERE id = :id');
+        $stmt->execute(['id' => $jogoId]);
+    }
+
     public static function sincronizarEventos(PDO $pdo, int $jogoId, array $eventos): void
     {
         $pdo->prepare('DELETE FROM jogo_eventos WHERE jogo_id = :jogo_id')->execute(['jogo_id' => $jogoId]);

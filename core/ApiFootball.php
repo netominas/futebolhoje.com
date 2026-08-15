@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 final class ApiFootball
 {
-    private const BASE_PATH = '/v3';
-
     public static function leagues(): array
     {
         return self::get('/leagues');
@@ -43,12 +41,17 @@ final class ApiFootball
             throw new RuntimeException('API_FOOTBALL_KEY não configurada (defina FUTEBOLHOJE_API_FOOTBALL_KEY).');
         }
 
-        $url = 'https://' . API_FOOTBALL_HOST . self::BASE_PATH . $endpoint;
+        $viaRapidApi = str_ends_with(API_FOOTBALL_HOST, 'rapidapi.com');
+        // O host direto (v3.football.api-sports.io) já embute a versão no próprio domínio;
+        // via RapidAPI o domínio é genérico e a versão entra no caminho da URL.
+        $basePath = $viaRapidApi ? '/v3' : '';
+
+        $url = 'https://' . API_FOOTBALL_HOST . $basePath . $endpoint;
         if ($query !== []) {
             $url .= '?' . http_build_query($query);
         }
 
-        $headers = str_ends_with(API_FOOTBALL_HOST, 'rapidapi.com')
+        $headers = $viaRapidApi
             ? [
                 'x-rapidapi-key: ' . API_FOOTBALL_KEY,
                 'x-rapidapi-host: ' . API_FOOTBALL_HOST,
