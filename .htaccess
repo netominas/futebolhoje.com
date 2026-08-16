@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Bloqueia acesso a arquivos/pastas ocultos (.git, .env, etc.) — defesa em camadas,
+# mesmo que o servidor já bloqueie isso por padrão.
+RewriteRule "(^|/)\." - [F]
+
 # Força HTTPS e www-less (ajuste conforme a configuração final de DNS)
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
