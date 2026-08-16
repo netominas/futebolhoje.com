@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <?= Seo::renderHead() ?>
 <link rel="icon" type="image/svg+xml" href="<?= e(asset('img/favicon.svg')) ?>">
-<link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>">
+<link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>?v=<?= (int) (@filemtime(__DIR__ . '/../assets/css/style.css') ?: time()) ?>">
 <?php if (ADSENSE_PUBLISHER_ID !== ''): ?>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?= e(ADSENSE_PUBLISHER_ID) ?>" crossorigin="anonymous"></script>
 <?php endif; ?>
