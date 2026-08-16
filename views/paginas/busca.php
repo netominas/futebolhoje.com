@@ -3,8 +3,7 @@
 /** @var array $ligas */
 /** @var array $times */
 ?>
-<div class="container">
-    <section class="secao">
+<section class="secao">
         <h1 class="secao__titulo">Resultados para "<?= e($termo) ?>"</h1>
 
         <?php if ($termo === ''): ?>
@@ -37,4 +36,3 @@
             <?php endif; ?>
         <?php endif; ?>
     </section>
-</div>

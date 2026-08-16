@@ -62,6 +62,19 @@ final class Time
         return $stmt->fetchAll();
     }
 
+    // IDs reais da API-Football dos times mais buscados pelo público brasileiro, usados na sidebar.
+    private const IDS_DESTAQUE = [127, 121, 131, 126, 541, 529, 50, 40];
+
+    public static function destaques(): array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT * FROM times WHERE id IN (' . implode(',', self::IDS_DESTAQUE) . ')
+             ORDER BY FIELD(id, ' . implode(',', self::IDS_DESTAQUE) . ')'
+        );
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public static function buscar(string $termo, int $limite = 30): array
     {
         $stmt = Database::getConnection()->prepare(

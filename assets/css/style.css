@@ -41,6 +41,65 @@ img { max-width: 100%; display: block; }
   padding: 0 16px;
 }
 
+/* Layout com sidebar */
+.layout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 28px;
+  align-items: start;
+  padding-top: 20px;
+}
+
+.conteudo-principal { min-width: 0; }
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 76px;
+}
+
+.sidebar-secao {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 14px;
+}
+
+.sidebar-secao__titulo {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cor-texto-suave);
+  font-weight: 800;
+  margin: 0 0 10px;
+}
+
+.sidebar-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+
+.sidebar-lista a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sidebar-lista a:hover { background: #fafbfc; }
+.sidebar-lista img { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+.sidebar-lista small { display: block; font-weight: 500; color: var(--cor-texto-suave); font-size: 11px; }
+.sidebar-anuncio .slot-anuncio { min-height: 250px; background: #fafbfc; border: 1px dashed var(--cor-borda); border-radius: 8px; margin: 0; }
+
+@media (max-width: 900px) {
+  .layout-grid { grid-template-columns: 1fr; }
+  .sidebar { position: static; flex-direction: row; flex-wrap: wrap; }
+  .sidebar-secao { flex: 1 1 260px; }
+}
+
 /* Header */
 .site-header {
   background: var(--cor-navy);
@@ -429,13 +488,32 @@ main { min-height: 60vh; padding-bottom: 48px; }
   background: var(--cor-navy);
   color: #a9b2c3;
   margin-top: 48px;
-  padding: 32px 0;
   font-size: 13px;
 }
 
-.site-footer__links { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
-.site-footer__links a { color: #c8cedb; font-weight: 600; }
-.site-footer__links a:hover { color: #fff; }
+.site-footer__grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 28px;
+  padding: 36px 0 20px;
+}
+
+.site-footer__coluna h3 { color: #fff; font-size: 14px; margin: 0 0 14px; }
+.site-footer__coluna p { color: #a9b2c3; margin: 0; }
+.site-footer__coluna ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.site-footer__coluna ul li a { color: #c8cedb; font-weight: 600; }
+.site-footer__coluna ul li a:hover { color: #fff; }
+.site-footer__coluna ul li a span { color: #7c8698; font-weight: 500; margin-left: 4px; }
+
+.site-footer__base {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 0;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .site-footer__grid { grid-template-columns: 1fr; gap: 24px; }
+}
 
 /* Anúncios (AdSense) */
 .slot-anuncio {

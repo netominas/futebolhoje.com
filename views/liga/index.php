@@ -2,8 +2,7 @@
 /** @var array $ligas */
 /** @var string $busca */
 ?>
-<div class="container">
-    <section class="secao">
+<section class="secao">
         <h1 class="secao__titulo">Ligas e campeonatos</h1>
 
         <?php if ($ligas === []): ?>
@@ -24,4 +23,3 @@
             </div>
         <?php endif; ?>
     </section>
-</div>

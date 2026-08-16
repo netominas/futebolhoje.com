@@ -19,9 +19,7 @@ function iconeEvento(string $tipo, ?string $detalhe): string
     };
 }
 ?>
-<div class="container">
-
-    <div class="placar-hero">
+<div class="placar-hero">
         <div class="placar-hero__liga">
             <a href="<?= e(url('/liga/' . $jogo['liga_slug'])) ?>" style="color:#a9b2c3;"><?= e($jogo['liga_nome']) ?></a>
             <?= $jogo['rodada'] ? '— ' . e($jogo['rodada']) : '' ?>
@@ -96,8 +94,6 @@ function iconeEvento(string $tipo, ?string $detalhe): string
         </div>
     </section>
     <?php endif; ?>
-
-</div>
 
 <?php if ($aoVivo): ?>
 <script>setTimeout(function () { location.reload(); }, 20000);</script>

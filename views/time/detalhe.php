@@ -3,8 +3,7 @@
 /** @var array $proximosJogos */
 /** @var array $ultimosResultados */
 ?>
-<div class="container">
-    <section class="secao">
+<section class="secao">
         <h1 class="secao__titulo">
             <?php if ($time['logo']): ?><img src="<?= e($time['logo']) ?>" alt="" style="width:32px;height:32px;object-fit:contain;"><?php endif; ?>
             <?= e($time['nome']) ?>
@@ -36,4 +35,3 @@
             </div>
         <?php endif; ?>
     </section>
-</div>

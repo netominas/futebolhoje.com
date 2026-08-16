@@ -1,8 +1,7 @@
 <?php
 /** @var array $jogosAoVivo */
 ?>
-<div class="container">
-    <section class="secao">
+<section class="secao">
         <h1 class="secao__titulo"><span class="badge-ao-vivo"><span class="dot-vivo"></span> Jogos ao vivo</span></h1>
 
         <?php if ($jogosAoVivo === []): ?>
@@ -22,6 +21,5 @@
             <?php endforeach; ?>
         <?php endif; ?>
     </section>
-</div>
 
 <script>setTimeout(function () { location.reload(); }, 20000);</script>

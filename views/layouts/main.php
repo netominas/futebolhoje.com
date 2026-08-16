@@ -14,7 +14,12 @@
 <?php View::partial('header'); ?>
 <?php View::partial('breadcrumbs'); ?>
 <main>
-<?= $conteudo ?>
+<div class="container layout-grid">
+    <div class="conteudo-principal">
+        <?= $conteudo ?>
+    </div>
+    <?php View::partial('sidebar'); ?>
+</div>
 </main>
 <?php View::partial('footer'); ?>
 </body>

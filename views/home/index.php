@@ -2,9 +2,7 @@
 /** @var array $jogosHoje */
 /** @var array $jogosAoVivo */
 ?>
-<div class="container">
-
-    <?php if ($jogosAoVivo !== []): ?>
+<?php if ($jogosAoVivo !== []): ?>
     <section class="secao">
         <h1 class="secao__titulo"><span class="badge-ao-vivo"><span class="dot-vivo"></span> Ao vivo agora</span></h1>
         <div class="liga-grupo">
@@ -35,8 +33,6 @@
             <?php endforeach; ?>
         <?php endif; ?>
     </section>
-
-</div>
 
 <?php if ($jogosAoVivo !== []): ?>
 <script>setTimeout(function () { location.reload(); }, 25000);</script>

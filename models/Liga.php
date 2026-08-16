@@ -35,6 +35,20 @@ final class Liga
         return $stmt->fetchAll();
     }
 
+    // IDs reais da API-Football dos campeonatos mais buscados pelo público brasileiro,
+    // usados na sidebar. FIELD() mantém a ordem de destaque definida aqui.
+    private const IDS_DESTAQUE = [71, 73, 13, 2, 39, 140, 135, 78, 61];
+
+    public static function destaques(): array
+    {
+        $stmt = Database::getConnection()->prepare(
+            'SELECT * FROM ligas WHERE id IN (' . implode(',', self::IDS_DESTAQUE) . ')
+             ORDER BY FIELD(id, ' . implode(',', self::IDS_DESTAQUE) . ')'
+        );
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public static function buscar(string $termo, int $limite = 30): array
     {
         $stmt = Database::getConnection()->prepare(

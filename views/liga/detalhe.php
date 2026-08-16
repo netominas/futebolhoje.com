@@ -6,8 +6,7 @@
 /** @var array $jogos */
 /** @var array $classificacao */
 ?>
-<div class="container">
-    <section class="secao">
+<section class="secao">
         <h1 class="secao__titulo">
             <?php if ($liga['logo']): ?><img src="<?= e($liga['logo']) ?>" alt="" style="width:28px;height:28px;object-fit:contain;"><?php endif; ?>
             <?= e($liga['nome']) ?> <span class="pais" style="font-weight:500;color:var(--cor-texto-suave);">— <?= e($liga['pais']) ?></span>
@@ -82,4 +81,3 @@
         <?php endforeach; ?>
     </section>
     <?php endif; ?>
-</div>
