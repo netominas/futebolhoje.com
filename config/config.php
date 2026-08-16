@@ -2,9 +2,14 @@
 
 declare(strict_types=1);
 
-// Preencha com os dados reais obtidos no painel ServerAvatar (Site "futebolhoje" > Database)
-// antes do deploy. Em produção, prefira definir essas variáveis de ambiente em vez de
-// hardcodar valores neste arquivo.
+// Em produção, as credenciais reais ficam em config/local.php (fora do git — cria esse arquivo
+// direto no servidor via SSH, com putenv() para cada variável). Localmente, sem esse arquivo,
+// cai nos valores padrão/variáveis de ambiente passadas na hora de rodar o PHP.
+$configLocal = __DIR__ . '/local.php';
+if (is_file($configLocal)) {
+    require $configLocal;
+}
+
 define('DB_HOST', getenv('FUTEBOLHOJE_DB_HOST') ?: '127.0.0.1');
 define('DB_NAME', getenv('FUTEBOLHOJE_DB_NAME') ?: 'futebolhoje');
 define('DB_USER', getenv('FUTEBOLHOJE_DB_USER') ?: 'futebolhoje_user');
