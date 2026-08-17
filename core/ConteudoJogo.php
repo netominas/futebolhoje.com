@@ -82,6 +82,17 @@ final class ConteudoJogo
 
             if ($evento['tipo'] === 'Goal') {
                 $detalhe = (string) ($evento['detalhe'] ?? '');
+
+                // A API-Football usa o tipo "Goal" também para cobranças de pênalti que o
+                // jogador perdeu (detalhe "Missed Penalty") — não houve gol nenhum, então
+                // narra como perda de pênalti em vez de gol marcado.
+                if (str_contains($detalhe, 'Missed Penalty')) {
+                    $frases[] = $jogador !== ''
+                        ? "Aos {$minuto}{$extra}' minutos, {$jogador} perdeu um pênalti para o {$time}."
+                        : "Aos {$minuto}{$extra}' minutos, o {$time} perdeu um pênalti.";
+                    continue;
+                }
+
                 $tipoGol = match (true) {
                     str_contains($detalhe, 'Penalty') => ' (pênalti)',
                     str_contains($detalhe, 'Own Goal') => ' (gol contra)',
