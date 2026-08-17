@@ -128,6 +128,7 @@ img { max-width: 100%; display: block; }
 }
 
 .site-header__logo span { color: var(--cor-primaria); }
+.site-header__logo-mark { flex-shrink: 0; display: block; }
 
 .site-nav {
   display: flex;
@@ -213,6 +214,41 @@ main { min-height: 60vh; padding-bottom: 48px; }
   align-items: center;
   gap: 8px;
 }
+
+.pagina-titulo {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 4px 0 8px;
+}
+
+.pagina-intro {
+  color: var(--cor-texto-suave);
+  margin: 0 0 24px;
+  max-width: 68ch;
+}
+
+.secao-sobre-home p { color: var(--cor-texto-suave); margin: 0 0 14px; }
+
+.lista-marcadores {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--cor-texto-suave);
+  display: grid;
+  gap: 8px;
+}
+
+.faq-item {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+
+.faq-item h3 { margin: 0 0 6px; font-size: 15px; }
+.faq-item p { margin: 0; color: var(--cor-texto-suave); }
 
 /* Grupo de jogos por liga */
 .liga-grupo {
@@ -511,6 +547,7 @@ main { min-height: 60vh; padding-bottom: 48px; }
 }
 
 .site-footer__coluna h3 { color: #fff; font-size: 14px; margin: 0 0 14px; }
+.site-footer__marca { display: flex; align-items: center; gap: 8px; font-size: 16px !important; }
 .site-footer__coluna p { color: #a9b2c3; margin: 0; }
 .site-footer__coluna ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
 .site-footer__coluna ul li a { color: #c8cedb; font-weight: 600; }

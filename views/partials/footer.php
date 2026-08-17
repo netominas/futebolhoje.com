@@ -2,8 +2,11 @@
 <footer class="site-footer">
     <div class="container site-footer__grid">
         <div class="site-footer__coluna">
-            <h3>FutebolHoje</h3>
-            <p>Placar ao vivo, resultados, classificação e estatísticas de todas as ligas de futebol, em tempo real.</p>
+            <h3 class="site-footer__marca">
+                <img src="<?= e(asset('img/logo-mark.svg')) ?>" alt="" width="24" height="24">
+                FutebolHoje
+            </h3>
+            <p>O FutebolHoje reúne placar ao vivo, jogos de hoje, resultados, classificação e estatísticas de futebol de ligas do Brasil e do mundo, atualizados em tempo real e sem enrolação.</p>
         </div>
 
         <?php if ($ligasFooter !== []): ?>

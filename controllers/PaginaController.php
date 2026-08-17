@@ -12,7 +12,7 @@ final class PaginaController
 
     public function sobre(): void
     {
-        Seo::set('Sobre o ' . SITE_NAME, 'Conheça o ' . SITE_NAME . ', portal de placar ao vivo e estatísticas de futebol.', '/sobre');
+        Seo::set('Sobre o ' . SITE_NAME, 'Conheça o ' . SITE_NAME . ', portal com os jogos de futebol de hoje, placar ao vivo, resultados e estatísticas de centenas de ligas.', '/sobre');
         View::render('paginas/sobre');
     }
 

@@ -43,6 +43,20 @@ function formatarHora(string $dataUtc): string
     return $timestamp ? date('H:i', $timestamp) : $dataUtc;
 }
 
+// Data por extenso em PT-BR (ex: "17 de agosto de 2026") sem depender da extensão intl
+// nem do locale do servidor, que raramente vem configurado para pt_BR.
+function formatarDataExtensa(?int $timestamp = null): string
+{
+    static $meses = [
+        1 => 'janeiro', 2 => 'fevereiro', 3 => 'março', 4 => 'abril',
+        5 => 'maio', 6 => 'junho', 7 => 'julho', 8 => 'agosto',
+        9 => 'setembro', 10 => 'outubro', 11 => 'novembro', 12 => 'dezembro',
+    ];
+    $timestamp ??= time();
+
+    return (int) date('j', $timestamp) . ' de ' . $meses[(int) date('n', $timestamp)] . ' de ' . date('Y', $timestamp);
+}
+
 // Rótulo em PT-BR pros status curtos que a API-Football retorna (NS, 1H, HT, 2H, FT, ...)
 function statusJogoLabel(string $statusShort, ?int $elapsed): string
 {
