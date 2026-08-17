@@ -12,11 +12,15 @@ final class Jogo
              INNER JOIN times tm ON tm.id = j.mandante_id
              INNER JOIN times tv ON tv.id = j.visitante_id";
 
+    // Ligas em destaque (definidas no painel admin) aparecem primeiro, na ordem configurada lá;
+    // as demais seguem por país/nome como antes.
+    private const ORDER_DESTAQUE = 'l.destaque DESC, l.ordem_destaque ASC, l.pais ASC, l.nome ASC, j.data_utc ASC';
+
     public static function hoje(): array
     {
         $stmt = Database::getConnection()->prepare(
             self::SELECT_BASE . ' WHERE DATE(j.data_utc) = CURDATE()
-             ORDER BY l.pais, l.nome, j.data_utc ASC'
+             ORDER BY ' . self::ORDER_DESTAQUE
         );
         $stmt->execute();
         return $stmt->fetchAll();
@@ -26,7 +30,7 @@ final class Jogo
     {
         $stmt = Database::getConnection()->prepare(
             self::SELECT_BASE . " WHERE j.status_curto IN ('1H', 'HT', '2H', 'ET', 'BT', 'P')
-             ORDER BY l.pais, l.nome, j.data_utc ASC"
+             ORDER BY " . self::ORDER_DESTAQUE
         );
         $stmt->execute();
         return $stmt->fetchAll();

@@ -62,16 +62,12 @@ final class Time
         return $stmt->fetchAll();
     }
 
-    // IDs reais da API-Football dos times mais buscados pelo público brasileiro, usados na sidebar.
-    private const IDS_DESTAQUE = [127, 121, 131, 126, 541, 529, 50, 40];
-
+    // Times marcados como destaque pelo painel admin, na ordem definida lá (sidebar)
     public static function destaques(): array
     {
-        $stmt = Database::getConnection()->prepare(
-            'SELECT * FROM times WHERE id IN (' . implode(',', self::IDS_DESTAQUE) . ')
-             ORDER BY FIELD(id, ' . implode(',', self::IDS_DESTAQUE) . ')'
+        $stmt = Database::getConnection()->query(
+            'SELECT * FROM times WHERE destaque = 1 ORDER BY ordem_destaque ASC'
         );
-        $stmt->execute();
         return $stmt->fetchAll();
     }
 
@@ -84,5 +80,56 @@ final class Time
         $stmt->bindValue('limite', $limite, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    // --- Painel admin ---
+
+    public static function paginado(string $busca, int $pagina, int $porPagina = 40): array
+    {
+        $offset = max(0, ($pagina - 1) * $porPagina);
+        $pdo = Database::getConnection();
+
+        $where = '';
+        $params = [];
+        if ($busca !== '') {
+            $where = 'WHERE nome LIKE :termo';
+            $params['termo'] = '%' . $busca . '%';
+        }
+
+        $stmtTotal = $pdo->prepare("SELECT COUNT(*) AS total FROM times {$where}");
+        $stmtTotal->execute($params);
+        $total = (int) $stmtTotal->fetch()['total'];
+
+        $stmt = $pdo->prepare(
+            "SELECT * FROM times {$where}
+             ORDER BY destaque DESC, ordem_destaque ASC, nome ASC
+             LIMIT :offset, :porPagina"
+        );
+        foreach ($params as $chave => $valor) {
+            $stmt->bindValue($chave, $valor);
+        }
+        $stmt->bindValue('offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue('porPagina', $porPagina, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return ['times' => $stmt->fetchAll(), 'total' => $total];
+    }
+
+    public static function definirDestaque(int $id, bool $destaque, ?int $ordem): void
+    {
+        $stmt = Database::getConnection()->prepare(
+            'UPDATE times SET destaque = :destaque, ordem_destaque = :ordem WHERE id = :id'
+        );
+        $stmt->execute([
+            'destaque' => $destaque ? 1 : 0,
+            'ordem' => $destaque ? $ordem : null,
+            'id' => $id,
+        ]);
+    }
+
+    public static function proximaOrdemDestaque(): int
+    {
+        $stmt = Database::getConnection()->query('SELECT COALESCE(MAX(ordem_destaque), 0) + 1 AS proxima FROM times WHERE destaque = 1');
+        return (int) $stmt->fetch()['proxima'];
     }
 }

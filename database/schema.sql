@@ -13,9 +13,13 @@ CREATE TABLE IF NOT EXISTS ligas (
     bandeira_pais VARCHAR(255) DEFAULT NULL,
     slug VARCHAR(200) NOT NULL,
     temporada_atual SMALLINT UNSIGNED DEFAULT NULL,
+    -- Controlados pelo painel admin: liga aparece na sidebar/footer/topo da home
+    destaque TINYINT(1) NOT NULL DEFAULT 0,
+    ordem_destaque SMALLINT UNSIGNED DEFAULT NULL,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE KEY uk_ligas_slug (slug)
+    UNIQUE KEY uk_ligas_slug (slug),
+    KEY idx_ligas_destaque (destaque, ordem_destaque)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS liga_temporadas (
@@ -37,9 +41,13 @@ CREATE TABLE IF NOT EXISTS times (
     logo VARCHAR(255) DEFAULT NULL,
     slug VARCHAR(200) NOT NULL,
     venue_id INT UNSIGNED DEFAULT NULL,
+    -- Controlados pelo painel admin: time aparece na sidebar
+    destaque TINYINT(1) NOT NULL DEFAULT 0,
+    ordem_destaque SMALLINT UNSIGNED DEFAULT NULL,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE KEY uk_times_slug (slug)
+    UNIQUE KEY uk_times_slug (slug),
+    KEY idx_times_destaque (destaque, ordem_destaque)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS estadios (
@@ -128,6 +136,15 @@ CREATE TABLE IF NOT EXISTS classificacao (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uk_classificacao (liga_id, temporada, grupo, time_id),
     CONSTRAINT fk_classificacao_time FOREIGN KEY (time_id) REFERENCES times (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS admin_usuarios (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(120) NOT NULL,
+    email VARCHAR(180) NOT NULL,
+    senha_hash VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_admin_usuarios_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Registro simples de execução dos workers de sincronização, útil para depuração/monitoramento
