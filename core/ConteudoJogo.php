@@ -90,9 +90,15 @@ final class ConteudoJogo
                 $assist = $evento['jogador_assistencia']
                     ? ', com assistência de ' . e($evento['jogador_assistencia'])
                     : '';
-                $frases[] = "Aos {$minuto}{$extra}' minutos, {$jogador} marcou para o {$time}{$tipoGol}{$assist}.";
+                // A API-Football às vezes não informa o nome do jogador; nesse caso descreve
+                // o lance sem sujeito em vez de deixar a frase com espaço duplo.
+                $frases[] = $jogador !== ''
+                    ? "Aos {$minuto}{$extra}' minutos, {$jogador} marcou para o {$time}{$tipoGol}{$assist}."
+                    : "Aos {$minuto}{$extra}' minutos, o {$time} marcou{$tipoGol}{$assist}.";
             } elseif ($evento['tipo'] === 'Card' && str_contains((string) ($evento['detalhe'] ?? ''), 'Red')) {
-                $frases[] = "Aos {$minuto}{$extra}' minutos, {$jogador} ({$time}) foi expulso de campo.";
+                $frases[] = $jogador !== ''
+                    ? "Aos {$minuto}{$extra}' minutos, {$jogador} ({$time}) foi expulso de campo."
+                    : "Aos {$minuto}{$extra}' minutos, um jogador do {$time} foi expulso de campo.";
             }
         }
 
