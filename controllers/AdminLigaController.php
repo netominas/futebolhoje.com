@@ -45,6 +45,22 @@ final class AdminLigaController
         $this->voltar();
     }
 
+    public function ativarConteudoIa(array $params): void
+    {
+        AdminAuth::exigirLogin();
+        AdminAuth::exigirCsrf();
+        Liga::definirConteudoIa((int) $params['id'], true);
+        $this->voltar();
+    }
+
+    public function desativarConteudoIa(array $params): void
+    {
+        AdminAuth::exigirLogin();
+        AdminAuth::exigirCsrf();
+        Liga::definirConteudoIa((int) $params['id'], false);
+        $this->voltar();
+    }
+
     private function voltar(): never
     {
         redirecionar($_POST['voltar'] ?? '/admin/ligas');

@@ -34,6 +34,8 @@ $router->get('/admin/ligas', fn () => (new AdminLigaController())->index());
 $router->post('/admin/ligas/{id}/destacar', fn (array $p) => (new AdminLigaController())->destacar($p));
 $router->post('/admin/ligas/{id}/remover', fn (array $p) => (new AdminLigaController())->remover($p));
 $router->post('/admin/ligas/{id}/ordem', fn (array $p) => (new AdminLigaController())->reordenar($p));
+$router->post('/admin/ligas/{id}/conteudo-ia/ativar', fn (array $p) => (new AdminLigaController())->ativarConteudoIa($p));
+$router->post('/admin/ligas/{id}/conteudo-ia/desativar', fn (array $p) => (new AdminLigaController())->desativarConteudoIa($p));
 
 $router->get('/admin/times', fn () => (new AdminTimeController())->index());
 $router->post('/admin/times/{id}/destacar', fn (array $p) => (new AdminTimeController())->destacar($p));

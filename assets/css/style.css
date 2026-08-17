@@ -295,6 +295,18 @@ main { min-height: 60vh; padding-bottom: 48px; }
   padding: 16px;
 }
 
+/* Conteúdo textual do jogo (padrão ou IA) */
+.conteudo-jogo p { margin: 0 0 14px; color: var(--cor-texto); }
+.conteudo-jogo p:last-child { margin-bottom: 0; }
+.conteudo-jogo h3 { font-size: 15px; margin: 18px 0 10px; }
+.conteudo-jogo h3:first-child { margin-top: 0; }
+.conteudo-jogo ul { margin: 0 0 14px; padding-left: 20px; }
+.conteudo-jogo ul li { margin-bottom: 6px; }
+.ficha-jogo { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.ficha-jogo li { padding: 8px 0; border-bottom: 1px solid var(--cor-borda); }
+.ficha-jogo li:last-child { border-bottom: none; padding-bottom: 0; }
+.ficha-jogo strong { color: var(--cor-texto-suave); font-weight: 700; margin-right: 6px; }
+
 .badge-ao-vivo {
   display: inline-flex;
   align-items: center;

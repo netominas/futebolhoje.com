@@ -2,6 +2,7 @@
 /** @var array $jogo */
 /** @var array $eventos */
 /** @var array $estatisticas */
+/** @var string $conteudo */
 $aoVivo = jogoEstaAoVivo($jogo['status_curto']);
 $encerrado = in_array($jogo['status_curto'], ['FT', 'AET', 'PEN'], true);
 
@@ -47,6 +48,15 @@ function iconeEvento(string $tipo, ?string $detalhe): string
             <?php endif; ?>
         </div>
     </div>
+
+    <?php if ($conteudo !== ''): ?>
+    <section class="secao">
+        <h2 class="secao__titulo">Sobre o jogo</h2>
+        <div class="cartao-vivo conteudo-jogo">
+            <?= $conteudo ?>
+        </div>
+    </section>
+    <?php endif; ?>
 
     <?php if ($eventos !== []): ?>
     <section class="secao">

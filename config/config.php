@@ -28,6 +28,10 @@ define('ADSENSE_PUBLISHER_ID', getenv('FUTEBOLHOJE_ADSENSE_ID') ?: '');
 define('API_FOOTBALL_KEY', getenv('FUTEBOLHOJE_API_FOOTBALL_KEY') ?: '');
 define('API_FOOTBALL_HOST', getenv('FUTEBOLHOJE_API_FOOTBALL_HOST') ?: 'v3.football.api-sports.io');
 
+// Chave da API da Anthropic (Claude), usada só nas ligas com "Conteúdo IA" ativo no admin
+define('ANTHROPIC_API_KEY', getenv('FUTEBOLHOJE_ANTHROPIC_API_KEY') ?: '');
+define('ANTHROPIC_MODEL', getenv('FUTEBOLHOJE_ANTHROPIC_MODEL') ?: 'claude-haiku-4-5');
+
 // true em desenvolvimento para exibir erros na tela; false em produção
 define('APP_DEBUG', filter_var(getenv('FUTEBOLHOJE_DEBUG') ?: 'false', FILTER_VALIDATE_BOOLEAN));
 

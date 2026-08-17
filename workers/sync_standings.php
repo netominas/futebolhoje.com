@@ -41,6 +41,11 @@ foreach ($combinacoes as $combo) {
     $ligaId = (int) $combo['liga_id'];
     $temporada = (int) $combo['temporada'];
 
+    // Com todas as ligas cobertas, uma leva pode ter centenas de combinações liga+temporada
+    // pra atualizar de uma vez. Sem pausa entre elas, isso estoura o limite de 300
+    // requests/minuto da API (foi o que aconteceu). 220ms de pausa = ~270/min, com folga.
+    usleep(220000);
+
     // Uma liga com formato inesperado (ex: chave eliminatória sem tabela de pontos) não pode
     // derrubar a sincronização das outras 261 ligas da leva.
     try {

@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS ligas (
     -- Controlados pelo painel admin: liga aparece na sidebar/footer/topo da home
     destaque TINYINT(1) NOT NULL DEFAULT 0,
     ordem_destaque SMALLINT UNSIGNED DEFAULT NULL,
+    -- Controlado pelo painel admin: jogos dessa liga ganham conteudo escrito por IA (ver jogo_conteudo)
+    conteudo_ia TINYINT(1) NOT NULL DEFAULT 0,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uk_ligas_slug (slug),
@@ -136,6 +138,17 @@ CREATE TABLE IF NOT EXISTS classificacao (
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uk_classificacao (liga_id, temporada, grupo, time_id),
     CONSTRAINT fk_classificacao_time FOREIGN KEY (time_id) REFERENCES times (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Conteudo escrito (padrao por template, ou IA para ligas marcadas) de cada jogo.
+-- Gerado sob demanda/pelo worker e cacheado aqui para nao reprocessar a cada visita.
+CREATE TABLE IF NOT EXISTS jogo_conteudo (
+    jogo_id INT UNSIGNED NOT NULL,
+    tipo ENUM('template', 'ia') NOT NULL DEFAULT 'template',
+    conteudo_html MEDIUMTEXT NOT NULL,
+    gerado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (jogo_id),
+    CONSTRAINT fk_jogo_conteudo_jogo FOREIGN KEY (jogo_id) REFERENCES jogos (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS admin_usuarios (

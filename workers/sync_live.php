@@ -13,6 +13,14 @@ declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
 
+// Trava por arquivo: se uma execução anterior ainda estiver rodando (ex: a API respondeu
+// devagar e passou do minuto), o cron seguinte sai na hora em vez de rodar em paralelo e
+// dobrar o consumo de requests.
+$lock = fopen(sys_get_temp_dir() . '/futebolhoje_sync_live.lock', 'c');
+if ($lock === false || !flock($lock, LOCK_EX | LOCK_NB)) {
+    exit(0);
+}
+
 $pdo = Database::getConnection();
 $duracaoTotalSegundos = 55;
 $intervaloSegundos = 15;
@@ -35,8 +43,12 @@ do {
         fwrite(STDERR, 'Erro: ' . $e->getMessage() . "\n");
     }
 
+    // Dorme o que faltar (nunca mais que o intervalo). Sem isso, quando sobra menos
+    // tempo que o intervalo o loop nem dormia nem saía — ficava martelando a API em
+    // sequência até o fim da janela (foi o que estourou a cota de requests).
     $restante = $fimEm - time();
-    if ($restante > $intervaloSegundos) {
-        sleep($intervaloSegundos);
+    if ($restante <= 0) {
+        break;
     }
+    sleep(min($intervaloSegundos, $restante));
 } while (time() < $fimEm);

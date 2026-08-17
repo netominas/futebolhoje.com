@@ -5,12 +5,15 @@ declare(strict_types=1);
 final class Jogo
 {
     private const SELECT_BASE = "SELECT j.*, l.nome AS liga_nome, l.slug AS liga_slug, l.logo AS liga_logo, l.pais AS liga_pais,
+                    l.conteudo_ia AS liga_conteudo_ia,
                     tm.nome AS mandante_nome, tm.logo AS mandante_logo, tm.slug AS mandante_slug,
-                    tv.nome AS visitante_nome, tv.logo AS visitante_logo, tv.slug AS visitante_slug
+                    tv.nome AS visitante_nome, tv.logo AS visitante_logo, tv.slug AS visitante_slug,
+                    e.nome AS estadio_nome, e.cidade AS estadio_cidade
              FROM jogos j
              INNER JOIN ligas l ON l.id = j.liga_id
              INNER JOIN times tm ON tm.id = j.mandante_id
-             INNER JOIN times tv ON tv.id = j.visitante_id";
+             INNER JOIN times tv ON tv.id = j.visitante_id
+             LEFT JOIN estadios e ON e.id = j.estadio_id";
 
     // Ligas em destaque (definidas no painel admin) aparecem primeiro, na ordem configurada lá;
     // as demais seguem por país/nome como antes.

@@ -7,7 +7,7 @@ $voltarAtual = $_SERVER['REQUEST_URI'];
 $totalPaginas = max(1, (int) ceil($total / 40));
 ?>
 <h1>Ligas</h1>
-<p class="admin-legenda">Ligas marcadas como destaque aparecem na sidebar, footer e no topo da home, na ordem definida abaixo.</p>
+<p class="admin-legenda">Ligas marcadas como destaque aparecem na sidebar, footer e no topo da home, na ordem definida abaixo. Ligas com "Conteúdo IA" ativo têm os jogos finalizados analisados por IA; as demais usam o resumo padrão gerado a partir dos dados da API.</p>
 
 <form method="get" class="admin-busca">
     <input type="search" name="busca" value="<?= e($busca) ?>" placeholder="Buscar por nome ou país...">
@@ -17,7 +17,7 @@ $totalPaginas = max(1, (int) ceil($total / 40));
 <div class="admin-tabela-wrap">
 <table class="admin-tabela">
     <thead>
-        <tr><th></th><th>Liga</th><th>País</th><th>Destaque</th><th>Ordem</th><th></th></tr>
+        <tr><th></th><th>Liga</th><th>País</th><th>Destaque</th><th>Ordem</th><th></th><th>Conteúdo IA</th></tr>
     </thead>
     <tbody>
         <?php foreach ($ligas as $liga): ?>
@@ -48,6 +48,21 @@ $totalPaginas = max(1, (int) ceil($total / 40));
                     <input type="hidden" name="csrf" value="<?= e(AdminAuth::csrfToken()) ?>">
                     <input type="hidden" name="voltar" value="<?= e($voltarAtual) ?>">
                     <button type="submit" class="btn-link">destacar</button>
+                </form>
+                <?php endif; ?>
+            </td>
+            <td>
+                <?php if ($liga['conteudo_ia']): ?>
+                <form method="post" action="<?= e(url('/admin/ligas/' . $liga['id'] . '/conteudo-ia/desativar')) ?>">
+                    <input type="hidden" name="csrf" value="<?= e(AdminAuth::csrfToken()) ?>">
+                    <input type="hidden" name="voltar" value="<?= e($voltarAtual) ?>">
+                    <button type="submit" class="btn-link">Ativo — desativar</button>
+                </form>
+                <?php else: ?>
+                <form method="post" action="<?= e(url('/admin/ligas/' . $liga['id'] . '/conteudo-ia/ativar')) ?>">
+                    <input type="hidden" name="csrf" value="<?= e(AdminAuth::csrfToken()) ?>">
+                    <input type="hidden" name="voltar" value="<?= e($voltarAtual) ?>">
+                    <button type="submit" class="btn-link">ativar</button>
                 </form>
                 <?php endif; ?>
             </td>

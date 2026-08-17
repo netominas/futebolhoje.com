@@ -53,7 +53,25 @@ final class JogoController
             'jogo' => $jogo,
             'eventos' => $eventos,
             'estatisticas' => $estatisticas,
+            'conteudo' => $this->obterConteudo($id, $jogo, $eventos),
         ]);
+    }
+
+    // Ligas com "Conteúdo IA" ativo usam o texto gerado pela IA (workers/gerar_conteudo_ia.php)
+    // depois que o jogo termina; todo o resto usa o resumo padrão, montado na hora a partir
+    // dos dados já sincronizados — nunca deixa a página sem conteúdo.
+    private function obterConteudo(int $jogoId, array $jogo, array $eventos): string
+    {
+        $finalizado = in_array($jogo['status_curto'], ['FT', 'AET', 'PEN'], true);
+
+        if ($finalizado && (bool) $jogo['liga_conteudo_ia']) {
+            $salvo = JogoConteudo::porJogoId($jogoId);
+            if ($salvo !== null && $salvo['tipo'] === 'ia') {
+                return $salvo['conteudo_html'];
+            }
+        }
+
+        return ConteudoJogo::gerarPadrao($jogo, $eventos);
     }
 
     private function eventosDesatualizados(?string $atualizadoEm): bool

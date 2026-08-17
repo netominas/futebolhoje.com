@@ -109,4 +109,16 @@ final class Liga
         $stmt = Database::getConnection()->query('SELECT COALESCE(MAX(ordem_destaque), 0) + 1 AS proxima FROM ligas WHERE destaque = 1');
         return (int) $stmt->fetch()['proxima'];
     }
+
+    public static function definirConteudoIa(int $id, bool $ativo): void
+    {
+        $stmt = Database::getConnection()->prepare('UPDATE ligas SET conteudo_ia = :ativo WHERE id = :id');
+        $stmt->execute(['ativo' => $ativo ? 1 : 0, 'id' => $id]);
+    }
+
+    public static function comConteudoIa(): array
+    {
+        $stmt = Database::getConnection()->query('SELECT id FROM ligas WHERE conteudo_ia = 1');
+        return array_map('intval', array_column($stmt->fetchAll(), 'id'));
+    }
 }
